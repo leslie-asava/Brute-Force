@@ -22,7 +22,7 @@ banner = r"""                      __________                __                 
                                          [*] sha1                 [*] shake_128
                                          [*] sha224               [*] shake_256
                                          [*] sha256               [*] shake3_256
-                                         [*] sha3_224
+                                         [*] sha3_224             [*] ntlm
                         """
 character_set = []
 
@@ -35,6 +35,9 @@ for character in SYMBOLS:
 for character in DIGITS:
 	character_set.append(character)
 
+def ntlm(text):
+	hashed = hashlib.new('md4', text.encode('utf-16le'))
+	return hashed
 def main():
 	running = True
 	length = 0
@@ -42,34 +45,36 @@ def main():
 	print(banner)
 
 	print("\n[+] Please enter the hashing algorithm to use")
-	response = input(">>> ")
+	algorithm_choice = input(">>> ")
 
-	if response == "blake2b":
+	if algorithm_choice == "blake2b":
 	    algorithm = hashlib.blake2b
-	elif response == "blake2s":
+	elif algorithm_choice == "blake2s":
 		algorithm = hashlib.blake2s
-	elif response == "md5":
+	elif algorithm_choice == "md5":
 		algorithm = hashlib.md5
-	elif response == "sha1":
+	elif algorithm_choice == "sha1":
 		algorithm = hashlib.sha1
-	elif response == "sha224":
+	elif algorithm_choice == "sha224":
 		algorithm = hashlib.sha224
-	elif response == "sha256":
+	elif algorithm_choice == "sha256":
 		algorithm = hashlib.sha256
-	elif response == "sha3_224":
+	elif algorithm_choice == "sha3_224":
 		algorithm = hashlib.sha3_224
-	elif response == "sha3_512":
+	elif algorithm_choice == "sha3_512":
 		algorithm = hashlib.sha3_224
-	elif response == "sha384":
+	elif algorithm_choice == "sha384":
 		algorithm = hashlib.sha384
-	elif response == "sha512":
+	elif algorithm_choice == "sha512":
 		algorithm = hashlib.sha512
-	elif response == "shake_128":
+	elif algorithm_choice == "shake_128":
 		algorithm = hashlib.shake_128
-	elif response == "shake_256":
+	elif algorithm_choice == "shake_256":
 		algorithm = hashlib.shake_256
-	elif response == "shake3_256":
+	elif algorithm_choice == "shake3_256":
 		algorithm = hashlib.shake3_256
+	elif algorithm_choice == "ntlm":
+		pass
 	else:
 		print("[+] Invalid Choice. Do you want to start again? (Y or N)")
 		response = input(">>> ")
@@ -92,7 +97,11 @@ def main():
 			for each in combinations:
 				combination = ""
 				combination = combination.join(each)
-				hashed = algorithm(combination.encode())
+				if algorithm_choice != "ntlm":
+					hashed = algorithm(combination.encode())
+				else:
+					hashed = hashlib.new('md4', combination.encode('utf-16le'))
+
 				if hash_input == hashed.hexdigest():
 					print("\n[!] Password found : '"+combination+"'")
 					running = False
