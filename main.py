@@ -1,6 +1,6 @@
 import itertools
 import hashlib
-import time
+import datetime
 import os
 
 LOWERCASE = "abcdefghijklmnopqrstuvwxyz"
@@ -34,7 +34,6 @@ for character in SYMBOLS:
 	character_set.append(character)
 for character in DIGITS:
 	character_set.append(character)
-
 def ntlm(text):
 	hashed = hashlib.new('md4', text.encode('utf-16le'))
 	return hashed
@@ -88,12 +87,12 @@ def main():
 			return
 	print("[+] Enter the hash you wish to brute-force")
 	hash_input = input(">>> ")
+	start_time = datetime.datetime.now()
 
 	while running:
 		if running:
-			start_time = time.time()
 			combinations = itertools.product(character_set,repeat=length+1)
-			print("            [*] Current combination length : "+str(length+1)+" "+str(time.time()-start_time))
+			print("            [*] Current combination length : "+str(length+1)+" "+str(datetime.datetime.now()-start_time))
 			for each in combinations:
 				combination = ""
 				combination = combination.join(each)
@@ -103,7 +102,7 @@ def main():
 					hashed = hashlib.new('md4', combination.encode('utf-16le'))
 
 				if hash_input == hashed.hexdigest():
-					print("\n[!] Password found : '"+combination+"'")
+					print("\n[!] Password found : '"+combination+"'  "+str(datetime.datetime.now()-start_time))
 					running = False
 					print("[+] Do you want to run again? (Y or N)")
 					response = input(">>> ")

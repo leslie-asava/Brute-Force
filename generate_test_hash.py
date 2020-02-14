@@ -34,7 +34,7 @@ elif algorithm_choice == "shake3_256":
 if algorithm_choice == "ntlm":
     hashed = hashlib.new('md4', text.encode('utf-16le'))
 else:
-    hashed = algorithm(text)
+    hashed = algorithm(text.encode())
     
 print(hashed.hexdigest())
 input("[+] Press Enter key to exit")
